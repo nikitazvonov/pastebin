@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\PasteController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +15,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [PasteController::class, 'index']);
+
+Route::post('/pastes', [PasteController::class, 'store']);
+
+Route::get('/{pasteHash}', [PasteController::class, 'show']);
+
+Route::get('/login', [UserController::class, 'login']);
+
+Route::get('/signup', [UserController::class, 'create']);
+
+Route::get('/logout', [UserController::class, 'logout']);
+
+Route::post('/users', [UserController::class, 'store']);
+
+Route::get('/{name}', [UserController::class, 'show']);
