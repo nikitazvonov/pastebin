@@ -5,7 +5,8 @@
         </div>
         @auth
             <div>
-                <a href="/{name}">{{$name}}</a>
+                <a href="/{name}">{{ $name }}</a>
+                <a href="/logout">LOGOUT</a>
             </div>
         @endauth
         @guest
