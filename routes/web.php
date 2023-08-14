@@ -19,7 +19,7 @@ Route::get('/', [PasteController::class, 'index']);
 
 Route::post('/pastes', [PasteController::class, 'store']);
 
-Route::get('/{hash}', [PasteController::class, 'show']);
+Route::get('/pastes/{hash}', [PasteController::class, 'show']);
 
 Route::get('/login', [UserController::class, 'login']);
 
@@ -31,4 +31,4 @@ Route::post('/users', [UserController::class, 'store']);
 
 Route::post('/authenticate', [UserController::class, 'authenticate']);
 
-Route::get('/{name}', [UserController::class, 'show']);
+Route::get('/users/{name}', [UserController::class, 'show']);
