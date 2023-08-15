@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <title>Pastebin</title>
 </head>
 <body>
     @include('includes.header')
     <section>
         <article>
+            @include('includes.aside')
             <div>
                 <form action="/pastes" method="POST">
                     @csrf
@@ -17,12 +19,7 @@
                         <label for="body">New Paste</label>
                         <textarea name="body" cols="30" rows="10"></textarea>
                     </div>
-                    <div>
-                        <label for="syntax_highlighting">Syntax Highlighting:</label>
-                        <select name="syntax_highlighting">
-                            <option disabled selected>None</option>
-                        </select>
-                    </div>
+                    @include ('includes.syntax')
                     <div>
                         <label for="paste_expiration">Paste Expiration:</label>
                         <select name="paste_expiration">
@@ -40,7 +37,7 @@
                         <select name="paste_exposure">
                             <option value="public" selected>Public</option>
                             <option value="unlisted">Unlisted</option>
-                            <option value="Private">Private</option>
+                            <option value="private">Private</option>
                         </select>
                     </div>
                     <div>
@@ -48,7 +45,7 @@
                         <input type="text" name="title">
                     </div>
                     <div>
-                        <input type="submit" name="submit" value="Create New Paste">
+                        <button>Create New Paste</button>
                     </div>
                 </form>
             </div>

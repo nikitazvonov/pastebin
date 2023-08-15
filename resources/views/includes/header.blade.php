@@ -5,7 +5,7 @@
         </div>
         @auth
             <div>
-                <a href="/{name}">{{ $name }}</a>
+                <a href="/users/{{ auth()->user()->name }}">{{ auth()->user()->name }}</a>
                 <a href="/logout">LOGOUT</a>
             </div>
         @endauth
