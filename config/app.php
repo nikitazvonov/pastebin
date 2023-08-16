@@ -1,5 +1,7 @@
 <?php
 
+use App\Providers\ComposerServiceProvider;
+use App\Providers\RepositoriesServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
@@ -167,6 +169,8 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\RepositoriesServiceProvider::class,
+        App\Providers\ComposerServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
     ])->toArray(),
 
