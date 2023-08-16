@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Paste;
 use Illuminate\Support\Str;
 
-class PasteRepository
+class PasteRepository implements PasteRepositoryInterface
 {
-    private static function expirationTime($pasteExpiration) {
+    public static function expirationTime($pasteExpiration) {
         switch ($pasteExpiration) {
             case '10 minutes':
                 return now()->addMinutes(10);
@@ -25,7 +25,7 @@ class PasteRepository
         }
     }
 
-    private static function makeRandomHash() {
+    public static function makeRandomHash() {
         return Str::random(8);
     }
 
@@ -62,8 +62,7 @@ class PasteRepository
 
     public function showPasteForGuest($hash) {
         return Paste::where('hash', $hash)
-            ->where('paste_exposure', 'public')
-            ->orWhere('paste_exposure', 'unlisted')
+            ->whereIn('paste_exposure', ['public', 'unlisted'])
             ->firstOrFail();
     }
 

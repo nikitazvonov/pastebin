@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\PasteRepositoryInterface;
 use Illuminate\Http\Request;
-use App\Models\Paste;
-use App\Repositories\PasteRepository;
-use Illuminate\Support\Facades\View;
 
 class PasteController extends Controller
 {
     private $pasteRepository;
 
-    public function __construct(PasteRepository $pasteRepository) {
+    public function __construct(PasteRepositoryInterface $pasteRepository) {
         $this->pasteRepository = $pasteRepository;
     }
 
@@ -25,7 +23,7 @@ class PasteController extends Controller
         return redirect('/');
     }
 
-    public function show(Request $request, $hash) {
+    public function show($hash) {
         if (auth()->check()) {
             $paste = $this->pasteRepository->showPaste($hash);
         } else {
