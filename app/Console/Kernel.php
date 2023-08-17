@@ -13,9 +13,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        /*
+        * Удаленный Task Scheduler для удаления записей с истекшим сроком.
+
         $schedule->call(function () {
             PasteRepository::deletePasteTask();
         })->everyFiveMinutes();
+
+        */
     }
 
     /**
