@@ -14,7 +14,7 @@
         <article>
             @include('includes.aside')
                 <div>
-                    <form action="/pastes" method="POST">
+                    <form action="{{ route('pastes.store') }}" method="POST">
                         @csrf
                         <strong><label for="body">New Paste</label></strong><br>
                         <textarea class="preserveLines" name="body" cols="100" rows="15"></textarea>

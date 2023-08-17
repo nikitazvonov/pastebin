@@ -19,7 +19,7 @@
                     @if ($paste->user_id === null)
                         <p>A GUEST | {{ $paste->created_at->format('F jS Y') }} | Paste expires: {{ $paste->paste_expiration === null ? 'Never' : $paste->paste_expiration }}</p>
                     @else
-                        <p><a href="/users/{{ $paste->user->name }}">{{ strtoupper($paste->user->name) }}</a> | {{ $paste->created_at->format('F jS Y') }} | Paste expires: {{ $paste->paste_expiration === null ? 'Never' : $paste->paste_expiration }}</p>
+                        <p><a href="{{ route('users.show', $paste->user->name) }}">{{ strtoupper($paste->user->name) }}</a> | {{ $paste->created_at->format('F jS Y') }} | Paste expires: {{ $paste->paste_expiration === null ? 'Never' : $paste->paste_expiration }}</p>
                     @endif
                 </div>
                 <div>

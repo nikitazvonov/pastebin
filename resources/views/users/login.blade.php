@@ -14,7 +14,7 @@
             @include('includes.aside')
             <h1>Login Page</h1>
             <div>
-                <form action="/authenticate" method="POST">
+                <form action="{{ route('users.authenticate') }}" method="POST">
                     @csrf
                     <div>
                         <label for="name">Username:</label>

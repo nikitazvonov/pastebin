@@ -14,7 +14,7 @@
             @include('includes.aside')
             <h1>Sign Up Page</h1>
             <div>
-                <form action="/users" method="POST">
+                <form action="{{ route('users.store') }}" method="POST">
                     @csrf
                     <div>
                         <label for="name">Username:</label>

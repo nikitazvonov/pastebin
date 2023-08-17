@@ -8,7 +8,7 @@
                     <ul>
                         @foreach ($myPastes as $myPaste)
                         <li>
-                            <a href="/pastes/{{ $myPaste->hash }}">{{ $myPaste->title }}</a> <br>
+                            <a href="{{ route('pastes.show', $myPaste->hash) }}">{{ $myPaste->title }}</a> <br>
                             @if ($myPaste->syntax_highlighting === null)
                                 {{ $myPaste->created_at->diffForHumans() }}
                             @else
@@ -25,7 +25,7 @@
                     <ul>
                         @foreach ($publicPastes as $publicPaste)
                         <li>
-                            <a href="/pastes/{{ $publicPaste->hash }}">{{ $publicPaste->title }}</a> <br>
+                            <a href="{{ route('pastes.show', $publicPaste->hash) }}">{{ $publicPaste->title }}</a> <br>
                             @if ($publicPaste->syntax_highlighting === null)
                                 {{ $publicPaste->created_at->diffForHumans() }}
                             @else
@@ -44,7 +44,7 @@
                 <ul>
                     @foreach ($publicPastes as $publicPaste)
                     <li>
-                        <a href="/pastes/{{ $publicPaste->hash }}">{{ $publicPaste->title }}</a> <br>
+                        <a href="{{ route('pastes.show', $publicPaste->hash) }}">{{ $publicPaste->title }}</a> <br>
                         @if ($publicPaste->syntax_highlighting === null)
                             {{ $publicPaste->created_at->diffForHumans() }}
                         @else

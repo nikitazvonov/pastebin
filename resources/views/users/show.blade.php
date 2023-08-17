@@ -33,7 +33,7 @@
                             @foreach ($pastes as $paste)
                                 <tr>
                                     <td>{{ $paste->paste_exposure }}</td>
-                                    <td><a href="/pastes/{{ $paste->hash }}">{{ $paste->title }}</a></td>
+                                    <td><a href="{{ route('pastes.show', $paste->hash) }}">{{ $paste->title }}</a></td>
                                     <td>{{ $paste->created_at->diffForHumans() }}</td>
                                     @if ($paste->paste_expiration === null)
                                         <td>Never</td>
