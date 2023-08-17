@@ -2,51 +2,29 @@
 
 namespace App\Repositories;
 
-use Illuminate\Http\Request;
 use App\Models\User;
 
 class UserRepository implements UserRepositoryInterface
 {
-    public function loginUser(Request $request) {
-        $incomingFields = $request->validate([
-            'name' => 'required|min:8|max:20',
-            'password' => 'required|min:8|max:20'
-        ]);
-
-        if (auth()->attempt($incomingFields)) {
-            $request->session()->regenerate();
-        }
-    }
-
-    public function createUser(Request $request) {
-        $incomingFields = $request->validate([
-            'name' => 'required|min:8|unique:users|max:20',
-            'password' => 'required|min:8|max:20'
-        ]);
-
-        $incomingFields['password'] = bcrypt($incomingFields['password']);
+    public function store(array $incomingFields) {
 
         $user = User::create($incomingFields);
 
-        auth()->login($user);
+        return $user;
     }
 
-    public function logoutUser(Request $request) {
-        auth()->logout();
-    }
-
-    public function showUserByName($name) {
+    public function getByName(string $name) {
         return User::where('name', $name)->firstOrFail();
     }
 
-    public function showAllPastesForUser() {
-        return $pastes = User::find(auth()->id())
+    public function getAllPastesForUser(int $id) {
+        return $pastes = User::find($id)
             ->pastes()
             ->orderBy('created_at', 'desc')
             ->paginate(10);
     }
 
-    public function showPublicPastesForGuest($name) {
+    public function getPublicPastesForGuest(string $name) {
         $user = User::where('name', $name)->firstOrFail();
         return User::find($user->id)
             ->pastes()

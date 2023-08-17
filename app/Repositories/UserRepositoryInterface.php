@@ -1,19 +1,14 @@
 <?php
 
 namespace App\Repositories;
-use Illuminate\Http\Request;
 
 interface UserRepositoryInterface
 {
-    public function loginUser(Request $request);
+    public function store(array $incomingFields);
 
-    public function createUser(Request $request);
+    public function getByName(string $name);
 
-    public function logoutUser(Request $request);
+    public function getAllPastesForUser(int $id);
 
-    public function showUserByName($name);
-
-    public function showAllPastesForUser();
-
-    public function showPublicPastesForGuest($name);
+    public function getPublicPastesForGuest(string $name);
 }
