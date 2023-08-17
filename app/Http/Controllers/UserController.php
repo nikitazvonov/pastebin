@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\UserRepositoryInterface;
+use App\Services\UserServiceInterface;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    private $userRepository;
+    private UserServiceInterface $userService;
 
-    public function __construct(UserRepositoryInterface $userRepository) {
-        $this->userRepository = $userRepository;
+    public function __construct(UserServiceInterface $userService) {
+        $this->userService = $userService;
     }
 
     public function login() {
@@ -22,29 +22,46 @@ class UserController extends Controller
     }
 
     public function authenticate(Request $request) {
-        $this->userRepository->loginUser($request);
+        $incomingFields = $request->validate([
+            'name' => 'required|min:8|max:20',
+            'password' => 'required|min:8|max:20'
+        ]);
+
+        if (auth()->attempt($incomingFields)) {
+            $request->session()->regenerate();
+        }
 
         return redirect('/');
     }
 
     public function logout(Request $request) {
-        $this->userRepository->logoutUser($request);
+        auth()->logout();
 
         return redirect('/');
     }
 
     public function store(Request $request) {
-        $this->userRepository->createUser($request);
+        $incomingFields = $request->validate([
+            'name' => 'required|min:8|unique:users|max:20',
+            'password' => 'required|min:8|max:20'
+        ]);
+
+        $incomingFields['password'] = $this->userService->hashPassword($incomingFields['password']);
+
+        $user = $this->userService->store($incomingFields);
+
+        auth()->login($user);
 
         return redirect('/');
     }
 
-    public function show($name) {
-        $user = $this->userRepository->showUserByName($name);
+    public function show(string $name) {
+        $user = $this->userService->show($name);
         if (auth()->check()) {
-            $pastes = $this->userRepository->showAllPastesForUser();
+            $id = auth()->id();
+            $pastes = $this->userService->getAllPastesForUser($id);
         } else {
-            $pastes = $this->userRepository->showPublicPastesForGuest($name);
+            $pastes = $this->userService->getPublicPastesForGuest($name);
         }
 
         return view('users.show', with([
