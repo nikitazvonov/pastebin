@@ -33,7 +33,7 @@ class PasteService implements PasteServiceInterface
     public function makeRandomHash() {
         $hash = Str::random(8);
         if ($this->pasteRepository->isHashExists($hash)) {
-            $this->makeRandomHash();
+            $hash = $this->makeRandomHash();
         }
 
         return $hash;
@@ -43,9 +43,9 @@ class PasteService implements PasteServiceInterface
         if ($expiration !== 'never') {
             $pasteExpiration = $this->expirationTime($expiration);
             return $pasteExpiration;
-        } else {
-            return $expiration = null;
         }
+        
+        return null;
     }
 
     public function store(array $incomingFields) {
@@ -73,11 +73,7 @@ class PasteService implements PasteServiceInterface
     }
 
     public function isExpired($paste) {
-        if (now() > $paste->paste_expiration && $paste->paste_expiration !== null) {
-            return true;
-        }
-
-        return false;
+        return now() > $paste->paste_expiration && $paste->paste_expiration !== null;
     }
 
     public function getLastPublic() {
@@ -93,5 +89,7 @@ class PasteService implements PasteServiceInterface
 
             return $pastes;
         }  
+
+        return null;
     }
 }
