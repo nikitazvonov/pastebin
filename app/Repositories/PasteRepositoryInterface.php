@@ -2,25 +2,21 @@
 
 namespace App\Repositories;
 
-use Illuminate\Http\Request;
-
 interface PasteRepositoryInterface
 {
-    public static function expirationTime($pasteExpiration);
+    public function isHashExists(string $hash);
 
-    public static function makeRandomHash();
+    public function store(array $incomingFields);
 
-    public function createPaste(Request $request);
+    public function getForUser(string $hash);
 
-    public function showPaste($hash);
+    public function getForGuest(string $hash);
 
-    public function showPasteForGuest($hash);
+    public function getLastPublic();
 
-    public function lastPublicPastes();
+    public function getLastPrivate(int $id);
 
-    public function lastPrivatePastes();
+    // public static function deletePasteTask();
 
-    public static function deletePasteTask();
-
-    public static function deletePaste($id);
+    // public static function deletePaste($id);
 }

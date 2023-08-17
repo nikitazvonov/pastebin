@@ -2,50 +2,23 @@
 
 namespace App\Repositories;
 
-use Illuminate\Http\Request;
 use App\Models\Paste;
-use Illuminate\Support\Str;
+use Illuminate\Database\Query\Builder;
 
 class PasteRepository implements PasteRepositoryInterface
 {
-    public static function expirationTime($pasteExpiration) {
-        switch ($pasteExpiration) {
-            case '10 minutes':
-                return now()->addMinutes(10);
-            case '1 hour':
-                return now()->addHour();
-            case '3 hours':
-                return now()->addHours(3);
-            case '1 day':
-                return now()->addDay();
-            case '1 week':
-                return now()->addWeek();
-            case '1 month':
-                return now()->addMonth();
+    public function isHashExists(string $hash) {
+        $paste = Paste::where('hash', $hash)->first();
+        if ($paste === null) {
+            return false;
         }
+
+        return true;
     }
 
-    public static function makeRandomHash() {
-        return Str::random(8);
-    }
-
-    public function createPaste(Request $request) {
-        $incomingFields = $request->input();
-        $incomingFields['hash'] = self::makeRandomHash();
-        if (!isset($incomingFields['syntax_highlighting'])) {
-            $incomingFields['syntax_highlighting'] = null;
-        }
-        if ($incomingFields['paste_expiration'] !== 'never') {
-            $incomingFields['paste_expiration'] = self::expirationTime($incomingFields['paste_expiration']);
-        } else {
-            $incomingFields['paste_expiration'] = null;
-        }
-        if (auth()->check()) {
-            $incomingFields['user_id'] = auth()->id();
-        } else {
-            $incomingFields['user_id'] = null;
-        }
-        Paste::create([
+    public function store(array $incomingFields) {
+        
+        $paste = Paste::create([
             'body' => $incomingFields['body'],
             'syntax_highlighting' => $incomingFields['syntax_highlighting'],
             'paste_expiration' => $incomingFields['paste_expiration'],
@@ -54,33 +27,39 @@ class PasteRepository implements PasteRepositoryInterface
             'title' => $incomingFields['title'],
             'hash' => $incomingFields['hash']
         ]);
+
+        return $paste;
     }
 
-    public function showPaste($hash) {
+    public function getForUser(string $hash) {
         return Paste::where('hash', $hash)->firstOrFail();
     }
 
-    public function showPasteForGuest($hash) {
+    public function getForGuest(string $hash) {
         return Paste::where('hash', $hash)
             ->whereIn('paste_exposure', ['public', 'unlisted'])
             ->firstOrFail();
     }
 
-    public function lastPublicPastes() {
+    public function getLastPublic() {
         return Paste::where('paste_exposure', 'public')
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get();
     }
 
-    public function lastPrivatePastes() {
-        if (auth()->check()) {
-            return Paste::where('user_id', auth()->id())
-                ->orderBy('created_at', 'desc')
-                ->limit(10)
-                ->get();
-        }
+    public function getLastPrivate(int $id) {
+        return Paste::where('user_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
     }
+
+    /*
+
+    * Изначально эти методы были написаны для того, чтобы реализовать возможности Task Scheduler,
+    * но так как в базе данных могут храниться тысячи паст, получать все пасты через all нелогично,
+    * поэтому истекший срок паст я решил проверять при их показе и показывать ошибку, если срок пасты истек.
 
     public static function deletePasteTask() {
         $allPastes = Paste::all();
@@ -94,4 +73,5 @@ class PasteRepository implements PasteRepositoryInterface
     public static function deletePaste($id) {
         Paste::find($id)->delete();
     }
+    */
 }

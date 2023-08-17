@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\PasteRepositoryInterface;
+use App\Services\PasteServiceInterface;
 use Illuminate\Http\Request;
 
 class PasteController extends Controller
 {
-    private $pasteRepository;
+    private $pasteService;
 
-    public function __construct(PasteRepositoryInterface $pasteRepository) {
-        $this->pasteRepository = $pasteRepository;
+    public function __construct(PasteServiceInterface $pasteService) {
+        $this->pasteService = $pasteService;
     }
 
     public function index() {
@@ -18,16 +18,27 @@ class PasteController extends Controller
     }
 
     public function store(Request $request) {
-        $this->pasteRepository->createPaste($request);
+        $incomingFields = $request->input();
 
-        return redirect('/');
+        if (auth()->check()) {
+            $incomingFields['user_id'] = auth()->id();
+        } else {
+            $incomingFields['user_id'] = null;
+        }
+
+        $paste = $this->pasteService->store($incomingFields);
+
+        return redirect()->route('pastes.show', $paste->hash)->with('paste', $paste);
     }
 
-    public function show($hash) {
+    public function show(string $hash) {
         if (auth()->check()) {
-            $paste = $this->pasteRepository->showPaste($hash);
+            $paste = $this->pasteService->getForUser($hash);
         } else {
-            $paste = $this->pasteRepository->showPasteForGuest($hash);
+            $paste = $this->pasteService->getForGuest($hash);
+        }
+        if ($this->pasteService->isExpired($paste)) {
+            abort(404);
         }
         
         return view('pastes.show', with(['paste' => $paste]));
