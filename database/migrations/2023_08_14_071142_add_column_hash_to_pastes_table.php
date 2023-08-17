@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('pastes', function (Blueprint $table) {
-            $table->string('hash');
+            $table->char('hash', 8)->unique();
         });
     }
 
